@@ -92,21 +92,21 @@ def _auto_map_sps_metrics(raw: dict[str, float]) -> dict[str, float]:
 
         # 1. PV Voltage
         if k_low in ("v_pv", "vpv", "v_pv_string1", "top_pv_voltage", "pv_voltage", "solar_voltage") or (
-            ("pv" in k_low or "solar" in k_low or "panel" in k_low) and "volt" in k_low
+            ("pv" in k_low or "solar" in k_low or "panel" in k_low) and ("volt" in k_low or "tegangan" in k_low)
         ):
             norm_v = round(v / 100.0, 2) if v > 1000.0 else v
             _set_if_zero("v_pv", norm_v)
 
         # 2. PV Current
         elif k_low in ("i_pv", "ipv", "i_pv_string1", "top_pv_current", "pv_current", "solar_current") or (
-            ("pv" in k_low or "solar" in k_low) and ("curr" in k_low or "amp" in k_low)
+            ("pv" in k_low or "solar" in k_low or "panel" in k_low) and ("curr" in k_low or "amp" in k_low or "arus" in k_low)
         ):
             norm_i = round(v / 100.0, 2) if v > 500.0 else v
             _set_if_zero("i_pv", norm_i)
 
         # 3. PV Power
         elif k_low in ("p_pv", "ppv", "top_pv_inputpower", "pv_inputpower", "pv_power", "solar_power") or (
-            ("pv" in k_low or "solar" in k_low) and ("power" in k_low or "watt" in k_low)
+            ("pv" in k_low or "solar" in k_low or "panel" in k_low) and ("power" in k_low or "watt" in k_low or "daya" in k_low)
         ):
             _set_if_zero("p_pv", v)
 
@@ -119,7 +119,7 @@ def _auto_map_sps_metrics(raw: dict[str, float]) -> dict[str, float]:
             "mppt_voltage",
             "v_bat",
             "v_batt",
-        ) or (("mppt" in k_low or "batt" in k_low or "batere" in k_low) and "volt" in k_low):
+        ) or (("mppt" in k_low or "batt" in k_low or "batere" in k_low) and ("volt" in k_low or "tegangan" in k_low)):
             norm_v = round(v / 100.0, 2) if v > 1000.0 else v
             _set_if_zero("v_mppt_out", norm_v)
             _set_if_zero("pms_batt_voltage", norm_v)
@@ -132,19 +132,19 @@ def _auto_map_sps_metrics(raw: dict[str, float]) -> dict[str, float]:
             "battery_current",
             "charging_current",
             "mppt_current",
-        ) or (("mppt" in k_low or "batt" in k_low or "charg" in k_low) and ("curr" in k_low or "charg" in k_low)):
+        ) or (("mppt" in k_low or "batt" in k_low or "charg" in k_low or "batere" in k_low) and ("curr" in k_low or "amp" in k_low or "arus" in k_low or "charg" in k_low)):
             norm_i = round(v / 100.0, 2) if v > 500.0 else v
             _set_if_zero("i_mppt_out", norm_i)
 
         # 6. MPPT Output Power
         elif k_low in ("p_mppt_out", "p_mppt", "mppt_power", "charging_power") or (
-            "mppt" in k_low and "power" in k_low
+            "mppt" in k_low and ("power" in k_low or "watt" in k_low or "daya" in k_low)
         ):
             _set_if_zero("p_mppt_out", v)
 
         # 7. DC Busbar Voltage
         elif k_low in ("v_busbar", "busbar_voltage", "dc_bus_voltage", "v_dc") or (
-            "busbar" in k_low and "volt" in k_low
+            "busbar" in k_low and ("volt" in k_low or "tegangan" in k_low)
         ):
             norm_v = round(v / 100.0, 2) if v > 1000.0 else v
             _set_if_zero("v_busbar", norm_v)
@@ -166,7 +166,7 @@ def _auto_map_sps_metrics(raw: dict[str, float]) -> dict[str, float]:
             _set_if_zero("irradiance", v)
 
         # 11. Temperature Sensor (MPPT / Controller / Device / Battery / Ambient)
-        elif "temp" in k_low:
+        elif "temp" in k_low or "suhu" in k_low:
             if -20.0 <= v <= 150.0:
                 _set_if_zero("temp_mppt", v)
 
